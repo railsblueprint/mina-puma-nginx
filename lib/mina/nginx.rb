@@ -49,7 +49,7 @@ namespace :nginx do
     nginx_enabled_config = fetch(:nginx_config_e)
 
     comment %(Installing nginx config file to #{nginx_config})
-    command %(sudo echo -ne '#{escaped_nginx_template}' > #{nginx_config})
+    command %(echo -ne '#{escaped_nginx_template}' | sudo tee #{nginx_config})
 
     comment %(Symlinking nginx config file to #{nginx_enabled_config})
     command %(sudo ln -nfs #{nginx_config} #{nginx_enabled_config})
