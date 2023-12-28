@@ -5,7 +5,7 @@ namespace :nginx do
   set :nginx_path,        '/etc/nginx'
   set :nginx_socket_path, -> { "#{fetch(:shared_path)}/tmp/sockets/puma.sock" }
   set :nginx_socket_flags, "fail_timeout=0"
-  set :nginx_config_unit, -> { "#{fetch(:application)}_#{fetch(:stage, fetch(:rails_env))}" }
+  set :nginx_config_unit, -> { "#{fetch(:application_name)}_#{fetch(:stage, fetch(:rails_env))}" }
   set :nginx_config_name, -> { "#{fetch(:nginx_config_unit)}.conf" }
 
   set :nginx_sites_available_path, -> { "#{fetch(:nginx_path)}/sites-available" }
@@ -85,7 +85,7 @@ namespace :nginx do
 
   def path_for_template installed: true
     installed ?
-      File.expand_path('./config/deploy/templates/nginx.conf.erb') :
-      File.expand_path('../templates/nginx.conf.erb', __FILE__)
+      File.expand_path('./config/deploy/templates/nginx.conf.template') :
+      File.expand_path('../templates/nginx.conf.template', __FILE__)
   end
 end

@@ -31,7 +31,7 @@ Install the base template to your repo's `lib/mina/templates` directory:
 
 Consider variables used by the nginx config, particularly:
 
-* `application`       - application name; defaults to 'application'
+* `application_name`   - application name; defaults to 'application'
 * `nginx_socket_path` - path to socket file used in nginx upstream directive
 * `server_name`       - application's nginx server_name (e.g. example.com); defaults to value for `domain`
 * `domain`            - fqdn you are deploying to
