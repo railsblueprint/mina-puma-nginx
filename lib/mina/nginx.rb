@@ -22,6 +22,11 @@ namespace :nginx do
   set :nginx_ssl_certificate_key, nil
   set :nginx_ssl_dhparam,         nil
 
+  # Certbot settings
+  set :certbot_email,             nil
+  set :certbot_domains,           -> { fetch(:nginx_server_name, '').split(' ').join(',') }
+  set :certbot_extra_flags,       ""
+
 
 
   desc 'Install Nginx config to repo'
@@ -63,6 +68,30 @@ namespace :nginx do
       comment %(#{action.capitalize} Nginx)
       command "sudo service nginx #{action}"
     end
+  end
+
+  desc 'Obtain/renew SSL certificate using Certbot'
+  task :certbot do
+    email = fetch(:certbot_email)
+    domains = fetch(:certbot_domains)
+    extra_flags = fetch(:certbot_extra_flags)
+    
+    unless domains && !domains.empty?
+      error! %(No domains found. Please set :nginx_server_name or :certbot_domains)
+    end
+    
+    comment %(Running Certbot for domains: #{domains})
+    
+    certbot_cmd = "sudo certbot"
+    certbot_cmd += " --nginx" # Use nginx plugin for automatic configuration
+    certbot_cmd += " --non-interactive --agree-tos"
+    certbot_cmd += " --email #{email}" if email && !email.empty?
+    certbot_cmd += " --domains #{domains}"
+    certbot_cmd += " #{extra_flags}" if extra_flags && !extra_flags.empty?
+    
+    command certbot_cmd
+    
+    comment %(Certbot has automatically updated nginx configuration and reloaded the service)
   end
 
   private
